@@ -12,7 +12,8 @@ jobs:
 
       - name: Download Video from Drive
         run: |
-          wget -q -O video.mp4 "https://drive.google.com/uc?export=download&id=11Kwzyzaulbwo-UBnXRcKrJMr6H1ZAjFy"
+          pip install gdown
+          gdown --id "11Kwzyzaulbwo-UBnXRcKrJMr6H1ZAjFy" -O video.mp4
 
       - name: Start Live Stream
         env:
