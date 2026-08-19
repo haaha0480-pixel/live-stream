@@ -12,11 +12,7 @@ jobs:
 
       - name: Download Video from Drive
         run: |
-          python3 -c '
-          import urllib.request
-          url = "https://drive.google.com/uc?export=download&id=11Kwzyzau1bwo-UBnXRcKrJMr6H1ZAjFy"
-          urllib.request.urlretrieve(url, "video.mp4")
-          '
+          wget -q -O video.mp4 "https://drive.google.com/uc?export=download&id=11Kwzyzau1bwo-UBnXRcKrJMr6H1ZAjFy"
 
       - name: Start Live Stream
         env:
@@ -36,3 +32,4 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/stream.yml/dispatches \
             -d '{"ref":"main"}'
+
