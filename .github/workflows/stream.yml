@@ -13,7 +13,7 @@ jobs:
       - name: Download Video from Drive
         run: |
           pip install gdown
-          gdown --id "11Kwzyzaulbwo-UBnXRcKrJMr6H1ZAjFy" -O video.mp4
+          gdown "https://drive.google.com/uc?id=11Kwzyzaulbwo-UBnXRcKrJMr6H1ZAjFy" -O video.mp4
 
       - name: Start Live Stream
         env:
