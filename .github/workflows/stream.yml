@@ -14,7 +14,7 @@ jobs:
         run: |
           python3 -c '
           import urllib.request
-          url = "https://drive.google.com/uc?export=download&id=11Kwzyzaulbwo-UBnXRcKrJMr6H1ZAjFy"
+          url = "https://drive.google.com/uc?export=download&id=11Kwzyzau1bwo-UBnXRcKrJMr6H1ZAjFy"
           urllib.request.urlretrieve(url, "video.mp4")
           '
 
