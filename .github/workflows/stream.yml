@@ -1,0 +1,26 @@
+name: YouTube Live Stream
+
+on:
+  workflow_dispatch: # Isse aap manually stream START/STOP kar sakte ho
+
+jobs:
+  stream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg wget
+
+      - name: Download Video from Drive
+        run: 
+          wget -O video.mp4 "https://drive.google.com/uc?export=download&id=11Kwzyzau1bwo-UBnXRcKrJMr6H1ZAjFy"
+
+      - name: Start Live Stream
+        env:
+          STREAM_KEY: ${{ secrets.STREAM_KEY }}
+        run: |
+          ffmpeg -re -stream_loop -1 -err_detect ignore_err -i video.mp4 \
+          -c:v libx264 -preset ultrafast -b:v 3000k -maxrate 3000k -bufsize 6000k \
+          -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 \
+          -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY"
