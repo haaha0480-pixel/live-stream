@@ -7,18 +7,20 @@ jobs:
   stream:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup FFmpeg Fast
-        uses: FedericoCarboni/setup-ffmpeg@v2
+      - name: Install Stable FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
 
       - name: Download Video from Drive
         run: |
-          wget -q -O video.mp4 "https://drive.google.com/uc?export=download&id=11Kwzyzau1bwo-UBnXRcKrJMr6H1ZAjFy"
+          wget -q -O video.mp4 "https://drive.google.com/uc?export=download&id=11Kwzyzaulbwo-UBnXRcKrJMr6H1ZAjFy"
 
       - name: Start Live Stream
         env:
           STREAM_KEY: ${{ secrets.STREAM_KEY }}
         run: |
-          timeout 10800 ffmpeg -re -stream_loop -1 -err_detect ignore_err -i video.mp4 \
+          timeout 10800 ffmpeg -re -stream_loop -1 -i video.mp4 \
           -c:v libx264 -preset ultrafast -b:v 3000k -maxrate 3000k -bufsize 6000k \
           -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 \
           -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY" || true
@@ -32,4 +34,3 @@ jobs:
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/${{ github.repository }}/actions/workflows/stream.yml/dispatches \
             -d '{"ref":"main"}'
-
