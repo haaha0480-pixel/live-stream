@@ -10,11 +10,11 @@ jobs:
       - name: Install FFmpeg
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg wget
 
       - name: Download Video from Drive
         run: |
-          curl -L -c cookies.txt "https://drive.google.com/uc?export=download&id=1M11BJEjVaI1UbInyNIVF1qSavG5V&confirm=$(curl -s -c cookies.txt 'https://drive.google.com/uc?export=download&id=1M11BJEjVaI1UbInyNIVF1qSavG5V' | grep -o 'confirm=[^&]*' | cut -d= -f2)" -o video.mp4
+          wget -O video.mp4 "https://drive.google.com/uc?export=download&id=11Kwzyzaulbwo-UBnXRcKrJMr6H1ZAjFy"
 
       - name: Start Live Stream
         env:
