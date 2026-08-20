@@ -14,7 +14,7 @@ jobs:
 
       - name: Download Video from Drive
         run: |
-          wget -O video.mp4 "https://drive.google.com/uc?export=download&id=11Kwzyzau1bwo-UBnXRcKrJMr6H1ZAjFy"
+          wget -O video.mp4 "https://drive.google.com/uc?export=download&id=1MlI8JEjVaI1UotWrNgvN1wF1q9savO5V"
 
       - name: Start Live Stream
         env:
