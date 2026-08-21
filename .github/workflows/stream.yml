@@ -7,14 +7,15 @@ jobs:
   stream:
     runs-on: ubuntu-latest
     steps:
-      - name: Install FFmpeg
+      - name: Install FFmpeg & gdown
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
+          pip install gdown
 
       - name: Download Video from Drive
         run: |
-          curl -L -c cookies.txt "https://drive.google.com/uc?export=download&id=1M11BJEjVaI1UbInyNIVF1qSavG5V&confirm=$(curl -s -c cookies.txt 'https://drive.google.com/uc?export=download&id=1M11BJEjVaI1UbInyNIVF1qSavG5V' | grep -o 'confirm=[^&]*' | cut -d= -f2)" -o video.mp4
+          gdown --id 1M11BJEjVaI1UbInyNIVF1qSavG5V -O video.mp4
 
       - name: Start Live Stream
         env:
