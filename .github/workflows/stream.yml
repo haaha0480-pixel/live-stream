@@ -22,9 +22,9 @@ jobs:
         run: |
           timeout 21000 ffmpeg -re -stream_loop -1 -err_detect ignore_err -i video.mp4 \
           -vf "eq=saturation=0.85:contrast=1.05,vignette=PI/4" \
-          -af "asetrate=44100*0.9,aresample=48000,lowpass=f=3200" \
-          -c:v libx264 -preset ultrafast -b:v 2000k -maxrate 2000k -bufsize 4000k \
-          -pix_fmt yuv420p -g 60 -c:a aac -b:a 128k -ar 48000 \
+          -af "asetrate=44100*0.9,aresample=44100" \
+          -c:v libx264 -preset ultrafast -b:v 2500k -maxrate 2500k -bufsize 5000k \
+          -pix_fmt yuv420p -g 60 -async 1 -c:a aac -b:a 160k -ar 44100 \
           -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY" || true
 
       - name: Trigger Next Workflow Run Automatically
