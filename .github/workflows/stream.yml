@@ -15,7 +15,7 @@ jobs:
 
       - name: Download Video from Drive
         run: |
-          gdown --id 1M11BJEjVaI1UbInyNIVF1qSavG5V -O video.mp4
+          gdown "https://drive.google.com/uc?id=1M11BJEjVaI1UbInyNIVF1qSavG5V" -O video.mp4
 
       - name: Start Live Stream
         env:
