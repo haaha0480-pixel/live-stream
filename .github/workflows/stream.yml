@@ -7,21 +7,22 @@ jobs:
   stream:
     runs-on: ubuntu-latest
     steps:
-      - name: Install FFmpeg & gdown
+      - name: Install FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
-          pip install gdown
 
       - name: Download Video from Drive
         run: |
-          gdown "https://drive.google.com/uc?id=1M11BJEjVaI1UbInyNIVF1qSavG5V" -O video.mp4
+          curl -L -c cookies.txt "https://drive.google.com/uc?export=download&id=1M11BJEjVaI1UbInyNIVF1qSavG5V&confirm=$(curl -s -c cookies.txt 'https://drive.google.com/uc?export=download&id=1M11BJEjVaI1UbInyNIVF1qSavG5V' | grep -o 'confirm=[^&]*' | cut -d= -f2)" -o video.mp4
 
       - name: Start Live Stream
         env:
           STREAM_KEY: ${{ secrets.STREAM_KEY }}
         run: |
           timeout 21000 ffmpeg -re -stream_loop -1 -err_detect ignore_err -i video.mp4 \
+          -vf "eq=saturation=0.85:contrast=1.05,vignette=PI/4" \
+          -af "asetrate=44100*0.9,aresample=44100,lowpass=f=3200" \
           -c:v libx264 -preset ultrafast -b:v 3000k -maxrate 3000k -bufsize 6000k \
           -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 \
           -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY" || true
