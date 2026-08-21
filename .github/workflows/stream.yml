@@ -10,17 +10,19 @@ jobs:
       - name: Install FFmpeg
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg wget
+          sudo apt-get install -y ffmpeg
 
       - name: Download Video from Drive
         run: |
-          wget -O video.mp4 "https://drive.google.com/uc?export=download&id=11Kwzyzau1bwo-UBnXRcKrJMr6H1ZAjFy"
+          curl -L -c cookies.txt "${{ secrets.DRIVE_LINK }}" -o video.mp4
 
       - name: Start Live Stream
         env:
           STREAM_KEY: ${{ secrets.STREAM_KEY }}
         run: |
           timeout 21000 ffmpeg -re -stream_loop -1 -err_detect ignore_err -i video.mp4 \
+          -vf "eq=saturation=0.8:contrast=1.1,vignette=PI/4" \
+          -af "asetrate=44100*0.9,aresample=44100,lowpass=f=3000" \
           -c:v libx264 -preset ultrafast -b:v 3000k -maxrate 3000k -bufsize 6000k \
           -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 \
           -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY" || true
