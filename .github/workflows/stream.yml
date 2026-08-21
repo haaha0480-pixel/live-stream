@@ -14,7 +14,7 @@ jobs:
 
       - name: Download Video from Drive
         run: |
-          wget --no-check-certificate 'https://drive.google.com/uc?export=download&id=11Kwzyzau1bwo-UBnXRcKrJMr6H1ZAjFy' -O video.mp4
+          wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=11Kwzyzau1bwo-UBnXRcKrJMr6H1ZAjFy' -O video.mp4
 
       - name: Start Live Stream
         env:
@@ -22,9 +22,9 @@ jobs:
         run: |
           timeout 21000 ffmpeg -re -stream_loop -1 -err_detect ignore_err -i video.mp4 \
           -vf "eq=saturation=0.85:contrast=1.05,vignette=PI/4" \
-          -af "asetrate=44100*0.9,aresample=44100,lowpass=f=3200" \
-          -c:v libx264 -preset ultrafast -b:v 3000k -maxrate 3000k -bufsize 6000k \
-          -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -ar 44100 \
+          -af "asetrate=44100*0.9,aresample=48000,lowpass=f=3200" \
+          -c:v libx264 -preset ultrafast -b:v 2000k -maxrate 2000k -bufsize 4000k \
+          -pix_fmt yuv420p -g 60 -c:a aac -b:a 128k -ar 48000 \
           -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY" || true
 
       - name: Trigger Next Workflow Run Automatically
