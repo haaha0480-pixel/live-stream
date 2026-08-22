@@ -17,14 +17,14 @@ jobs:
         run: |
           gdown 'https://drive.google.com/uc?export=download&id=1euB3y-lC57dof1O8ZvtEkuaIID5joyLD' -O input.mp4
 
-      - name: Start Live Stream with Audio Clean & Bass Fix
+      - name: Start Live Stream with Deep Audio Fix
         env:
           STREAM_KEY: ${{ secrets.STREAM_KEY }}
         run: |
           timeout 21000 ffmpeg -re -stream_loop -1 -i input.mp4 \
           -c:v copy \
-          -af "highpass=f=80,lowpass=f=12000,loudnorm=I=-16:TP=-1.5:LRA=11,volume=0.85" \
-          -c:a aac -b:a 192k \
+          -af "highpass=f=120,equalizer=f=100:width_type=h:width=80:g=-12,equalizer=f=250:width_type=h:width=120:g=-6,equalizer=f=2500:width_type=h:width=1000:g=4,acompressor=threshold=-18dB:ratio=4:attack=5:release=50,alimiter=limit=0.8,volume=0.8" \
+          -c:a aac -b:a 256k \
           -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY" || true
 
       - name: Trigger Next Workflow Run Automatically
