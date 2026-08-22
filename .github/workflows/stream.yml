@@ -15,14 +15,16 @@ jobs:
 
       - name: Download Video from Drive
         run: |
-          gdown 'https://drive.google.com/uc?export=download&id=1euB3y-lC57dof1O8ZvtEkuaIID5joyLD' -O video.mp4
+          gdown 'https://drive.google.com/uc?export=download&id=1euB3y-lC57dof1O8ZvtEkuaIID5joyLD' -O input.mp4
 
-      - name: Start Live Stream
+      - name: Start Live Stream with Audio Clean & Bass Fix
         env:
           STREAM_KEY: ${{ secrets.STREAM_KEY }}
         run: |
-          timeout 21000 ffmpeg -re -stream_loop -1 -i video.mp4 \
-          -c:v copy -c:a copy \
+          timeout 21000 ffmpeg -re -stream_loop -1 -i input.mp4 \
+          -c:v copy \
+          -af "highpass=f=80,lowpass=f=12000,loudnorm=I=-16:TP=-1.5:LRA=11,volume=0.85" \
+          -c:a aac -b:a 192k \
           -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY" || true
 
       - name: Trigger Next Workflow Run Automatically
