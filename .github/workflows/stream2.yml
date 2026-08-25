@@ -1,0 +1,33 @@
+name: YouTube Live Stream 2
+
+on:
+  workflow_dispatch:
+
+jobs:
+  stream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install FFmpeg & gdown
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg python3-pip
+          pip install --upgrade gdown
+
+      - name: Download Second Video from Drive
+        run: |
+          gdown 'https://drive.google.com/uc?export=download&id=1ABi8vvT0zkWB7M0GKhGugzpWNkj-prVu' -O input2.mp4
+
+      - name: Start Live Stream 2 (Original Quality)
+        env:
+          STREAM_KEY: ${{ secrets.STREAM_KEY_2 }}
+        run: |
+          timeout 21000 ffmpeg -re -stream_loop -1 -i input2.mp4 \
+          -c:v copy \
+          -c:a copy \
+          -f flv "rtmp://a.rtmp.youtube.com/live2/$STREAM_KEY" || true
+
+      - name: Trigger Next Workflow Run Automatically
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          gh workflow run stream2.yml -R ${{ github.repository }}
